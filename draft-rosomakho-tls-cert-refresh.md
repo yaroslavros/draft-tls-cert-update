@@ -19,35 +19,31 @@
 # Change the file extension to match the format (.xml for XML, etc...)
 #
 ###
-title: "TODO - Your title"
-abbrev: "TODO - Abbreviation"
-category: info
+title: "Certificate Refresh in TLS 1.3"
+abbrev: "Certificate Refresh in TLS 1.3"
+category: std
 
-docname: draft-todo-yourname-protocol-latest
+docname: draft-rosomakho-tls-cert-refresh-latest
 submissiontype: IETF  # also: "independent", "editorial", "IAB", or "IRTF"
 number:
 date:
 consensus: true
 v: 3
-area: AREA
-workgroup: WG Working Group
-keyword:
- - next generation
- - unicorn
- - sparkling distributed ledger
+area: Security
+workgroup: Transport Layer Security
 venue:
-  group: WG
+  group: Transport Layer Security
   type: Working Group
-  mail: WG@example.com
-  arch: https://example.com/WG
-  github: USER/REPO
-  latest: https://example.com/LATEST
+  mail: tls@ietf.org
+  arch: https://mailarchive.ietf.org/arch/browse/tls/
+  github: yaroslavros/draft-tls-cert-refresh
+  latest: https://yaroslavros.github.io/draft-tls-cert-refresh/draft-rosomakho-tls-cert-refresh.html
 
 author:
  -
-    fullname: Your Name Here
-    organization: Your Organization Here
-    email: your.email@example.com
+    fullname: Yaroslav Rosomakho
+    organization: Zscaler
+    email: yrosomakho@zscaler.com
 
 normative:
 
