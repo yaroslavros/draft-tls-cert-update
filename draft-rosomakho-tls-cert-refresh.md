@@ -9,15 +9,15 @@ number:
 date:
 consensus: true
 v: 3
-area: Security
-workgroup: Transport Layer Security
+area: ""
+workgroup: "Transport Layer Security"
 venue:
-  group: Transport Layer Security
-  type: Working Group
-  mail: tls@ietf.org
-  arch: https://mailarchive.ietf.org/arch/browse/tls/
-  github: yaroslavros/draft-tls-cert-refresh
-  latest: https://yaroslavros.github.io/draft-tls-cert-refresh/draft-rosomakho-tls-cert-refresh.html
+  group: "Transport Layer Security"
+  type: ""
+  mail: "tls@ietf.org"
+  arch: "https://mailarchive.ietf.org/arch/browse/tls/"
+  github: "yaroslavros/draft-tls-cert-refresh"
+  latest: "https://yaroslavros.github.io/draft-tls-cert-refresh/draft-rosomakho-tls-cert-refresh.html"
 
 author:
  -
