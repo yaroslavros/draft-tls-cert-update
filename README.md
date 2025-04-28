@@ -1,13 +1,13 @@
 <!-- regenerate: on (set to off if you edit this file) -->
 
-# Certificate Refresh in TLS 1.3
+# Certificate Update in TLS 1.3
 
-This is the working area for the individual Internet-Draft, "Certificate Refresh in TLS 1.3".
+This is the working area for the individual Internet-Draft, "Certificate Update in TLS 1.3".
 
-* [Editor's Copy](https://yaroslavros.github.io/draft-tls-cert-refresh/#go.draft-rosomakho-tls-cert-refresh.html)
-* [Datatracker Page](https://datatracker.ietf.org/doc/draft-rosomakho-tls-cert-refresh)
-* [Individual Draft](https://datatracker.ietf.org/doc/html/draft-rosomakho-tls-cert-refresh)
-* [Compare Editor's Copy to Individual Draft](https://yaroslavros.github.io/draft-tls-cert-refresh/#go.draft-rosomakho-tls-cert-refresh.diff)
+* [Editor's Copy](https://yaroslavros.github.io/draft-tls-cert-update/#go.draft-rosomakho-tls-cert-update.html)
+* [Datatracker Page](https://datatracker.ietf.org/doc/draft-rosomakho-tls-cert-update)
+* [Individual Draft](https://datatracker.ietf.org/doc/html/draft-rosomakho-tls-cert-update)
+* [Compare Editor's Copy to Individual Draft](https://yaroslavros.github.io/draft-tls-cert-update/#go.draft-rosomakho-tls-cert-update.diff)
 
 
 ## Contributing
