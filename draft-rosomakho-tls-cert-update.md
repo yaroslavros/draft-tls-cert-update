@@ -185,8 +185,6 @@ Upon receiving a `CertificateUpdateRequest`, the peer MUST validate that the mes
 
 This specification is applicable to the {{QUIC}} protocol, which uses TLS 1.3 for connection security as described in {{?QUIC-TLS=RFC9001}}.
 
-QUIC does not support TLS 1.3 post-handshake authentication {{!TLS=RFC8446}}, which limits the ability to update certificates during an established connection. Consequently, long-lived QUIC connections cannot accommodate certificate expiration without terminating and re-establishing the connection. This specification addresses that limitation by enabling both endpoints to refresh their certificates mid-connection using Exported Authenticators delivered in dedicated handshake messages, without requiring session termination.
-
 Endpoints implementing this specification over QUIC MUST encapsulate `CertificateUpdate` and `CertificateUpdateRequest` handshake messages within CRYPTO frames, consistent with the general treatment of TLS messages in QUIC.
 
 All other requirements defined in this document, including handshake process, message sequences, validation procedures, and error handling, apply equally to QUIC deployments. A QUIC connection MUST treat protocol violations (such as sending a `CertificateUpdate` before the handshake completes) as connection errors of type `CRYPTO_ERROR`, using an appropriate alert code such as `illegal_parameter` or `unexpected_message` mapped as defined in {{Section 20.1 of QUIC}}.
