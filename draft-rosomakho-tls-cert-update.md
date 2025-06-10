@@ -45,7 +45,7 @@ This document defines a mechanism that enables TLS 1.3 endpoints to update their
 
 # Introduction
 
-{{!TLS=RFC8446}} provides strong guarantees of confidentiality, integrity, and authentication, but does not include a general-purpose mechanism for updating certificates of both endpoints after the handshake. While TLS 1.3 permits post-handshake authentication for clients, it provides no standardized way for servers to update their certificates once the handshake is complete. 
+{{!TLS=RFC8446}} provides strong guarantees of confidentiality, integrity, and authentication, but does not include a general-purpose mechanism for updating certificates of both endpoints after the handshake. While TLS 1.3 permits post-handshake authentication for clients as defined in {{Section 4.6.2 of TLS}}, it provides no standardized way for servers to update their certificates once the handshake is complete. Additionally, TLS 1.3 post-handshake authentication is explicitly prohibited from QUIC according to {{Section 4.4 of ?QUIC-TLS=RFC9001}} and HTTP/2 according to {{Section 2 of ?HTTP2-TLS13=RFC8740}} because it allows clients to introduce new certificates and change authorization properties of the connection.
 
 This presents a limitation for long-lived connections in environments where certificates may need to be refreshed, whether due to expiration, revocation, or key rotation. Terminating and re-establishing connections solely for the purpose of updating certificates can be disruptive and inefficient.
 
