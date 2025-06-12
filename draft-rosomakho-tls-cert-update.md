@@ -24,6 +24,13 @@ author:
     fullname: Yaroslav Rosomakho
     organization: Zscaler
     email: yrosomakho@zscaler.com
+ -
+    fullname: Tirumaleswar Reddy
+    organization: Nokia
+    city: Bangalore
+    region: Karnataka
+    country: India
+    email: "kondtir@gmail.com"
 
 normative:
 
@@ -38,7 +45,9 @@ This document defines a mechanism that enables TLS 1.3 endpoints to update their
 
 # Introduction
 
-{{!TLS=RFC8446}} provides strong guarantees of confidentiality, integrity, and authentication, but does not include a mechanism for updating endpoint certificates after the handshake completes. This presents a limitation for long-lived connections in environments where certificates may need to be refreshed, whether due to expiration, revocation, or key rotation.
+{{!TLS=RFC8446}} provides strong guarantees of confidentiality, integrity, and authentication, but does not include a general-purpose mechanism for updating certificates of both endpoints after the handshake. While TLS 1.3 permits post-handshake authentication for clients as defined in {{Section 4.6.2 of TLS}}, it provides no standardized way for servers to update their certificates once the handshake is complete. Additionally, TLS 1.3 post-handshake authentication is explicitly prohibited from QUIC according to {{Section 4.4 of ?QUIC-TLS=RFC9001}} and HTTP/2 according to {{Section 2 of ?HTTP2-TLS13=RFC8740}} because it allows clients to introduce new certificates and change authorization properties of the connection.
+
+This presents a limitation for long-lived connections in environments where certificates may need to be refreshed, whether due to expiration, revocation, or key rotation. Terminating and re-establishing connections solely for the purpose of updating certificates can be disruptive and inefficient.
 
 Exported Authenticators {{!EXPORTED-AUTH=RFC9261}} offer a general-purpose mechanism for proving possession of a certificate after the handshake, using an authenticator request supplied by the peer. However, the specification does not define a mechanism for transmitting authenticator requests or delivering authenticators at the TLS layer.
 
@@ -49,6 +58,8 @@ To deliver the updated certificate, a new TLS handshake message, `CertificateUpd
 Because authenticator requests are single-use and may not be reused in subsequent authenticator constructions, a second post-handshake message is defined: `CertificateUpdateRequest`. This message allows an endpoint to provide a new authenticator request for future use after processing a `CertificateUpdate`.
 
 This approach allows TLS connections to remain valid across certificate updates without requiring session termination. It is compatible with TLS 1.3 and {{?QUIC=RFC9000}}, and can be used regardless of the application protocol encapsulated within the connection.
+
+The certificate update mechanism in the document is deliberately constrained to preserve the authentication and authorization context of the connection. The updated certificate must retain the same subject, attributes, and issuing certificate authority as the original, with the only permitted difference being the validity period. This ensures that the peer identity remains unchanged and that application-layer authorization decisions based on the original certificate continue to hold after the update. By limiting the scope of updates in this way, the mechanism provides secure and seamless certificate refresh without altering the security properties of the TLS session.
 
 # Conventions and Definitions
 
@@ -177,6 +188,8 @@ This specification is applicable to the {{QUIC}} protocol, which uses TLS 1.3 fo
 Endpoints implementing this specification over QUIC MUST encapsulate `CertificateUpdate` and `CertificateUpdateRequest` handshake messages within CRYPTO frames, consistent with the general treatment of TLS messages in QUIC.
 
 All other requirements defined in this document, including handshake process, message sequences, validation procedures, and error handling, apply equally to QUIC deployments. A QUIC connection MUST treat protocol violations (such as sending a `CertificateUpdate` before the handshake completes) as connection errors of type `CRYPTO_ERROR`, using an appropriate alert code such as `illegal_parameter` or `unexpected_message` mapped as defined in {{Section 20.1 of QUIC}}.
+
+The certificate update mechanism defined in this document is compatible with QUIC as it does not introduce changes to the peer's identity.
 
 # Security Considerations
 
