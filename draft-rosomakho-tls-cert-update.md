@@ -189,7 +189,7 @@ Endpoints implementing this specification over QUIC MUST encapsulate `Certificat
 
 All other requirements defined in this document, including handshake process, message sequences, validation procedures, and error handling, apply equally to QUIC deployments. A QUIC connection MUST treat protocol violations (such as sending a `CertificateUpdate` before the handshake completes) as connection errors of type `CRYPTO_ERROR`, using an appropriate alert code such as `illegal_parameter` or `unexpected_message` mapped as defined in {{Section 20.1 of QUIC}}.
 
-The certificate update mechanism defined in this document is compatible with QUIC as it does not introduce changes to the peer's identity. 
+The certificate update mechanism defined in this document is compatible with QUIC as it does not introduce changes to the peer's identity.
 
 # Security Considerations
 
