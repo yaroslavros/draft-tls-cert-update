@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-06-10T01:52:09.453618+00:00",
+  "timestamp": "2025-06-12T01:49:53.968785+00:00",
   "repo": "yaroslavros/draft-tls-cert-update",
   "labels": [
     {
@@ -63,13 +63,13 @@
       "labels": [],
       "body": "",
       "createdAt": "2025-06-09T12:36:25Z",
-      "updatedAt": "2025-06-09T21:42:40Z",
+      "updatedAt": "2025-06-10T08:51:17Z",
       "baseRepository": "yaroslavros/draft-tls-cert-update",
       "baseRefName": "main",
       "baseRefOid": "1d14c23fc6f098bf352504f9ca2a444b8a01865d",
       "headRepository": "tireddy2/draft-tls-cert-update",
       "headRefName": "main",
-      "headRefOid": "8449a60d9d36e034162d6b1cb57ac40041065fdb",
+      "headRefOid": "b867a099a3898ccbe9a40561318a0d2f753121c1",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -99,6 +99,26 @@
               "body": "I'm not sure if repetition of introduction is necessary here. If we do, we need to explain once again how certificate update mechanism is different and why it is allowed in QUIC",
               "createdAt": "2025-06-09T21:42:15Z",
               "updatedAt": "2025-06-09T21:42:40Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOdsfOM6tmp_a",
+          "commit": {
+            "abbreviatedOid": "8449a60"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-06-10T08:51:07Z",
+          "updatedAt": "2025-06-10T08:51:08Z",
+          "comments": [
+            {
+              "originalPosition": 39,
+              "body": "Yes, I removed the text. ",
+              "createdAt": "2025-06-10T08:51:08Z",
+              "updatedAt": "2025-06-10T08:51:08Z"
             }
           ]
         }
