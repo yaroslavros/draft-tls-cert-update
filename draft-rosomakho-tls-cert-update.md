@@ -194,7 +194,7 @@ The certificate update mechanism defined in this document is compatible with QUI
 
 # Applicability to DTLS
 
-This specification is also applicable to DTLS 1.3 {{RFC9147}}. The CertificateUpdate and CertificateUpdateRequest messages are handshake messages and are subject to DTLS built-in support for sequencing, fragmentation, retransmission, and replay detection, as specified in {{RFC9147}}. No additional protection mechanisms are required beyond the normal DTLS handshake processing.
+This specification is also applicable to DTLS 1.3 {{!DTLS=RFC9147}}. The `CertificateUpdate` and `CertificateUpdateRequest` messages are handshake messages and are subject to DTLS built-in support for sequencing, fragmentation, retransmission, and replay detection, as specified in {{DTLS}}. No additional protection mechanisms are required beyond the normal DTLS handshake processing.
 
 # Security Considerations
 
