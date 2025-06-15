@@ -132,7 +132,6 @@ The Exported Authenticator carried in a `CertificateUpdate` message MUST meet th
 - Updated certificate MUST NOT contain any extensions that are not present in the original certificate.
 - The public key MAY differ from the original, but the public key algorithm and key length MUST match those of the original certificate.
 - The issuer of the updated certificate MUST be the same as the issuer of the original certificate.
-- If the original certificate includes Key Usage and/or Extended Key Usage extensions, the updated certificate MUST include each of these extensions with exactly the same values.
 - The `SignatureScheme` used in the `CertificateVerify` message of the Exported Authenticator MUST be the same as the one used in the sender’s original handshake authentication.
 - The certificate provided in the `CertificateUpdate` message MUST NOT have been used previously by the sender during the current TLS session.
 
