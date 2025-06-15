@@ -213,7 +213,7 @@ Endpoints MUST discard authenticator requests after a successful `CertificateUpd
 
 ## Application-Layer Implications
 
-Applications that rely on peer certificate properties for access control decisions MUST reevaluate those decisions after a certificate update. Applications MUST treat a certificate update as equivalent to an initial authentication event and MUST ensure that the updated certificate satisfies all identity and authorization checks that were met during the TLS handshake. Applications MUST reassess access permissions accordingly, and if the updated certificate fails any of these checks, the application MUST terminate the connection.
+Applications that rely on peer certificate properties for access control decisions MAY reevaluate those decisions after a certificate update if needed. However, because the updated certificate is required to maintain the same identity, such re-validation is typically unnecessary for applications that rely only on the peer's authenticated identity. If the updated certificate does not match the identity validated during the TLS handshake, the TLS stack MUST terminate the connection.
 
 # IANA Considerations
 
