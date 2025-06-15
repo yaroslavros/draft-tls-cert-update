@@ -5,8 +5,8 @@
 Transport Layer Security                                    Y. Rosomakho
 Internet-Draft                                                   Zscaler
 Intended status: Standards Track                                T. Reddy
-Expires: 14 December 2025                                          Nokia
-                                                            12 June 2025
+Expires: 17 December 2025                                          Nokia
+                                                            15 June 2025
 
 
                      Certificate Update in TLS 1.3
@@ -56,7 +56,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 14 December 2025.
+   This Internet-Draft will expire on 17 December 2025.
 
 Copyright Notice
 
@@ -85,16 +85,17 @@ Table of Contents
    5.  Additional Authenticator Requests
      5.1.  Sending and Receiving CertificateUpdateRequest
    6.  Applicability to QUIC
-   7.  Security Considerations
-     7.1.  Identity Continuity
-     7.2.  Replay Prevention
-     7.3.  Application-Layer Implications
-   8.  IANA Considerations
-     8.1.  TLS Extension
-     8.2.  TLS Handshake Message Types
-   9.  References
-     9.1.  Normative References
-     9.2.  Informative References
+   7.  Applicability to DTLS
+   8.  Security Considerations
+     8.1.  Identity Continuity
+     8.2.  Replay Prevention
+     8.3.  Application-Layer Implications
+   9.  IANA Considerations
+     9.1.  TLS Extension
+     9.2.  TLS Handshake Message Types
+   10. References
+     10.1.  Normative References
+     10.2.  Informative References
    Acknowledgments
    Authors' Addresses
 
@@ -285,8 +286,9 @@ Table of Contents
    *  Updated certificate MUST NOT contain any extensions that are not
       present in the original certificate.
 
-   *  The public key algorithm and key length MUST match those of the
-      original certificate.
+   *  The public key MAY differ from the original, but the public key
+      algorithm and key length MUST match those of the original
+      certificate.
 
    *  The issuer of the updated certificate MUST be the same as the
       issuer of the original certificate.
@@ -413,7 +415,16 @@ Table of Contents
    compatible with QUIC as it does not introduce changes to the peer's
    identity.
 
-7.  Security Considerations
+7.  Applicability to DTLS
+
+   This specification is also applicable to DTLS 1.3 [DTLS].  The
+   CertificateUpdate and CertificateUpdateRequest messages are handshake
+   messages and are subject to DTLS built-in support for sequencing,
+   fragmentation, retransmission, and replay detection, as specified in
+   [DTLS].  No additional protection mechanisms are required beyond the
+   normal DTLS handshake processing.
+
+8.  Security Considerations
 
    This mechanism relies on the security properties of [TLS] and
    Exported Authenticators [EXPORTED-AUTH].  It introduces additional
@@ -421,7 +432,7 @@ Table of Contents
    handshake and requires careful handling to avoid introducing
    vulnerabilities.
 
-7.1.  Identity Continuity
+8.1.  Identity Continuity
 
    The requirements on updated certificates and signature algorithms
    ensure that the logical identity authenticated during the handshake
@@ -434,7 +445,7 @@ Table of Contents
    Failure to enforce these constraints could allow an attacker to
    impersonate a different entity within the same connection.
 
-7.2.  Replay Prevention
+8.2.  Replay Prevention
 
    Each authenticator request MUST be used exactly once to prevent
    replay attacks.  Exported Authenticators inherently bind to the
@@ -446,20 +457,23 @@ Table of Contents
    corresponds uniquely to the most recent authenticator request
    received.
 
-7.3.  Application-Layer Implications
+8.3.  Application-Layer Implications
 
    Applications that rely on peer certificate properties for access
-   control decisions MUST reevaluate those decisions after a certificate
-   update.  Applications SHOULD treat a certificate update as equivalent
-   to an initial authentication event and reassess access permissions
-   accordingly.
+   control decisions MAY reevaluate those decisions after a certificate
+   update if needed.  However, because the updated certificate is
+   required to maintain the same identity, such re-validation is
+   typically unnecessary for applications that rely only on the peer's
+   authenticated identity.  If the updated certificate does not match
+   the identity validated during the TLS handshake, the TLS stack MUST
+   terminate the connection.
 
-8.  IANA Considerations
+9.  IANA Considerations
 
    This document registers a new TLS extension and two new TLS handshake
    message types, as described below.
 
-8.1.  TLS Extension
+9.1.  TLS Extension
 
    IANA is requested to add the following entry to the "TLS
    ExtensionType Values" registry:
@@ -476,7 +490,7 @@ Table of Contents
 
    *  The Reference is this document
 
-8.2.  TLS Handshake Message Types
+9.2.  TLS Handshake Message Types
 
    IANA is requested to add the following entries to the "TLS
    HandshakeType" registry.
@@ -505,9 +519,14 @@ Table of Contents
 
    *  The Comment section is empty
 
-9.  References
+10.  References
 
-9.1.  Normative References
+10.1.  Normative References
+
+   [DTLS]     Rescorla, E., Tschofenig, H., and N. Modadugu, "The
+              Datagram Transport Layer Security (DTLS) Protocol Version
+              1.3", RFC 9147, DOI 10.17487/RFC9147, April 2022,
+              <https://www.rfc-editor.org/rfc/rfc9147>.
 
    [EXPORTED-AUTH]
               Sullivan, N., "Exported Authenticators in TLS", RFC 9261,
@@ -527,7 +546,7 @@ Table of Contents
               Version 1.3", RFC 8446, DOI 10.17487/RFC8446, August 2018,
               <https://www.rfc-editor.org/rfc/rfc8446>.
 
-9.2.  Informative References
+10.2.  Informative References
 
    [HTTP2-TLS13]
               Benjamin, D., "Using TLS 1.3 with HTTP/2", RFC 8740,
