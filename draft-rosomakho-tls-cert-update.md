@@ -130,7 +130,7 @@ The Exported Authenticator carried in a `CertificateUpdate` message MUST meet th
 - The subject field of the certificate MUST match exactly with the certificate originally presented by the sender during the handshake.
 - All extensions present in the original certificate MUST also be present in the updated certificate with identical values.
 - Updated certificate MUST NOT contain any extensions that are not present in the original certificate.
-- The public key algorithm and key length MUST match those of the original certificate.
+- The public key MAY differ from the original, but the public key algorithm and key length MUST match those of the original certificate.
 - The issuer of the updated certificate MUST be the same as the issuer of the original certificate.
 - The `SignatureScheme` used in the `CertificateVerify` message of the Exported Authenticator MUST be the same as the one used in the sender’s original handshake authentication.
 - The certificate provided in the `CertificateUpdate` message MUST NOT have been used previously by the sender during the current TLS session.
@@ -191,6 +191,10 @@ All other requirements defined in this document, including handshake process, me
 
 The certificate update mechanism defined in this document is compatible with QUIC as it does not introduce changes to the peer's identity.
 
+# Applicability to DTLS
+
+This specification is also applicable to DTLS 1.3 {{!DTLS=RFC9147}}. The `CertificateUpdate` and `CertificateUpdateRequest` messages are handshake messages and are subject to DTLS built-in support for sequencing, fragmentation, retransmission, and replay detection, as specified in {{DTLS}}. No additional protection mechanisms are required beyond the normal DTLS handshake processing.
+
 # Security Considerations
 
 This mechanism relies on the security properties of {{TLS}} and Exported Authenticators {{EXPORTED-AUTH}}. It introduces additional opportunities for certificate-based authentication after the initial handshake and requires careful handling to avoid introducing vulnerabilities.
@@ -209,7 +213,7 @@ Endpoints MUST discard authenticator requests after a successful `CertificateUpd
 
 ## Application-Layer Implications
 
-Applications that rely on peer certificate properties for access control decisions MUST reevaluate those decisions after a certificate update. Applications SHOULD treat a certificate update as equivalent to an initial authentication event and reassess access permissions accordingly.
+Applications that rely on peer certificate properties for access control decisions MAY reevaluate those decisions after a certificate update if needed. However, because the updated certificate is required to maintain the same identity, such re-validation is typically unnecessary for applications that rely only on the peer's authenticated identity. If the updated certificate does not match the identity validated during the TLS handshake, the TLS stack MUST terminate the connection.
 
 # IANA Considerations
 
