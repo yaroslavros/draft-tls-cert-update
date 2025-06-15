@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-06-12T01:49:53.968785+00:00",
+  "timestamp": "2025-06-15T02:00:42.929164+00:00",
   "repo": "yaroslavros/draft-tls-cert-update",
   "labels": [
     {
@@ -56,24 +56,26 @@
       "id": "PR_kwDOOdsfOM6ZrcJY",
       "title": "Update to draft",
       "url": "https://github.com/yaroslavros/draft-tls-cert-update/pull/1",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "tireddy2",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2025-06-09T12:36:25Z",
-      "updatedAt": "2025-06-10T08:51:17Z",
+      "updatedAt": "2025-06-12T22:59:35Z",
       "baseRepository": "yaroslavros/draft-tls-cert-update",
       "baseRefName": "main",
       "baseRefOid": "1d14c23fc6f098bf352504f9ca2a444b8a01865d",
       "headRepository": "tireddy2/draft-tls-cert-update",
       "headRefName": "main",
-      "headRefOid": "b867a099a3898ccbe9a40561318a0d2f753121c1",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "70f3807ae56cc77d78187137984d79bc2929e1b8",
+      "closedAt": "2025-06-12T22:59:35Z",
+      "mergedAt": "2025-06-12T22:59:35Z",
+      "mergedBy": "yaroslavros",
+      "mergeCommit": {
+        "oid": "cc6642818a031bdabc28f95dac318e67c88cbbca"
+      },
       "comments": [],
       "reviews": [
         {
@@ -108,7 +110,7 @@
             "abbreviatedOid": "8449a60"
           },
           "author": "tireddy2",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2025-06-10T08:51:07Z",
@@ -119,6 +121,71 @@
               "body": "Yes, I removed the text. ",
               "createdAt": "2025-06-10T08:51:08Z",
               "updatedAt": "2025-06-10T08:51:08Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "id": "PR_kwDOOdsfOM6aVbhl",
+      "title": "Further updates to draft",
+      "url": "https://github.com/yaroslavros/draft-tls-cert-update/pull/2",
+      "state": "OPEN",
+      "author": "tireddy2",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-06-13T06:58:37Z",
+      "updatedAt": "2025-06-13T10:10:15Z",
+      "baseRepository": "yaroslavros/draft-tls-cert-update",
+      "baseRefName": "main",
+      "baseRefOid": "cc6642818a031bdabc28f95dac318e67c88cbbca",
+      "headRepository": "tireddy2/draft-tls-cert-update",
+      "headRefName": "main",
+      "headRefOid": "ef80c4e09b5526e71c0cd08ff32660cda13824d3",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOOdsfOM6uS349",
+          "commit": {
+            "abbreviatedOid": "ef80c4e"
+          },
+          "author": "yaroslavros",
+          "authorAssociation": "OWNER",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2025-06-13T10:04:24Z",
+          "updatedAt": "2025-06-13T10:10:15Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "```suggestion\r\n```\r\nLet's replace it with inline reference (see suggestion below)",
+              "createdAt": "2025-06-13T10:04:24Z",
+              "updatedAt": "2025-06-13T10:10:15Z"
+            },
+            {
+              "originalPosition": 25,
+              "body": "```suggestion\r\nThis specification is also applicable to DTLS 1.3 {{!DTLS=RFC9147}}. The `CertificateUpdate` and `CertificateUpdateRequest` messages are handshake messages and are subject to DTLS built-in support for sequencing, fragmentation, retransmission, and replay detection, as specified in {{DTLS}}. No additional protection mechanisms are required beyond the normal DTLS handshake processing.\r\n```",
+              "createdAt": "2025-06-13T10:04:56Z",
+              "updatedAt": "2025-06-13T10:10:15Z"
+            },
+            {
+              "originalPosition": 15,
+              "body": "Isn't this already covered by the following points above?\r\n\r\n> All extensions present in the original certificate MUST also be present in the updated certificate with identical values.\r\n> Updated certificate MUST NOT contain any extensions that are not present in the original certificate.",
+              "createdAt": "2025-06-13T10:06:26Z",
+              "updatedAt": "2025-06-13T10:10:15Z"
+            },
+            {
+              "originalPosition": 35,
+              "body": "I'm really not sure about this.\r\n\r\nThe whole idea of certificate update compared to application level authenticators such as described in `draft-ietf-httpbis-secondary-server-certs` is to make it as transparent to applications as possible. Having a MUST here goes against this. Do you foresee a hard requirement to reevaluate authentication for all kinds of applications given that we have a very strict wording about nature of the updated cert above? That is, it has to have the same algorithm, extensions, signed by the very same chain and so on. Effectively the only allowed variance is validity.",
+              "createdAt": "2025-06-13T10:09:59Z",
+              "updatedAt": "2025-06-13T10:10:15Z"
             }
           ]
         }
