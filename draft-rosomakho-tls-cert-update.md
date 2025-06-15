@@ -33,7 +33,6 @@ author:
     email: "kondtir@gmail.com"
 
 normative:
- RFC9147:
 
 informative:
 
