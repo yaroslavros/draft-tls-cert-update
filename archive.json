@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-06-15T02:00:42.929164+00:00",
+  "timestamp": "2025-06-17T01:51:37.575495+00:00",
   "repo": "yaroslavros/draft-tls-cert-update",
   "labels": [
     {
@@ -131,24 +131,26 @@
       "id": "PR_kwDOOdsfOM6aVbhl",
       "title": "Further updates to draft",
       "url": "https://github.com/yaroslavros/draft-tls-cert-update/pull/2",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "tireddy2",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2025-06-13T06:58:37Z",
-      "updatedAt": "2025-06-13T10:10:15Z",
+      "updatedAt": "2025-06-15T18:24:15Z",
       "baseRepository": "yaroslavros/draft-tls-cert-update",
       "baseRefName": "main",
       "baseRefOid": "cc6642818a031bdabc28f95dac318e67c88cbbca",
       "headRepository": "tireddy2/draft-tls-cert-update",
       "headRefName": "main",
-      "headRefOid": "ef80c4e09b5526e71c0cd08ff32660cda13824d3",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "299fad74c75296dfb6f2743a06eb0f4bf1e4fdfd",
+      "closedAt": "2025-06-15T18:24:15Z",
+      "mergedAt": "2025-06-15T18:24:15Z",
+      "mergedBy": "yaroslavros",
+      "mergeCommit": {
+        "oid": "ee13ff7e15173a9f19767e5e3cc8f034890d80b9"
+      },
       "comments": [],
       "reviews": [
         {
@@ -186,6 +188,46 @@
               "body": "I'm really not sure about this.\r\n\r\nThe whole idea of certificate update compared to application level authenticators such as described in `draft-ietf-httpbis-secondary-server-certs` is to make it as transparent to applications as possible. Having a MUST here goes against this. Do you foresee a hard requirement to reevaluate authentication for all kinds of applications given that we have a very strict wording about nature of the updated cert above? That is, it has to have the same algorithm, extensions, signed by the very same chain and so on. Effectively the only allowed variance is validity.",
               "createdAt": "2025-06-13T10:09:59Z",
               "updatedAt": "2025-06-13T10:10:15Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOdsfOM6ulZWF",
+          "commit": {
+            "abbreviatedOid": "ef80c4e"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-06-15T08:11:54Z",
+          "updatedAt": "2025-06-15T08:11:55Z",
+          "comments": [
+            {
+              "originalPosition": 15,
+              "body": "Yes, it is already covered, removed it. ",
+              "createdAt": "2025-06-15T08:11:54Z",
+              "updatedAt": "2025-06-15T08:11:55Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOOdsfOM6umCD7",
+          "commit": {
+            "abbreviatedOid": "ef80c4e"
+          },
+          "author": "tireddy2",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-06-15T11:41:50Z",
+          "updatedAt": "2025-06-15T11:41:50Z",
+          "comments": [
+            {
+              "originalPosition": 35,
+              "body": "I see your point, how about the following text: \r\n\r\nApplications that rely on peer certificate properties for access control decisions MAY reevaluate those decisions after a certificate update if needed. However, because the updated certificate is required to maintain the same identity, such re-validation is typically unnecessary for applications that rely only on the peer\u2019s authenticated identity. If the updated certificate does not match the identity validated during the TLS handshake, the TLS stack MUST terminate the connection.",
+              "createdAt": "2025-06-15T11:41:50Z",
+              "updatedAt": "2025-06-15T11:41:50Z"
             }
           ]
         }
