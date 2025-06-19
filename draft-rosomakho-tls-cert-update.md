@@ -61,6 +61,70 @@ This approach allows TLS connections to remain valid across certificate updates 
 
 The certificate update mechanism in the document is deliberately constrained to preserve the authentication and authorization context of the connection. The updated certificate must retain the same subject, attributes, and issuing certificate authority as the original, with the only permitted difference being the validity period. This ensures that the peer identity remains unchanged and that application-layer authorization decisions based on the original certificate continue to hold after the update. By limiting the scope of updates in this way, the mechanism provides secure and seamless certificate refresh without altering the security properties of the TLS session.
 
+# Overview
+
+~~~~~~~~~~ ascii-art
+                                                                                      
+     ┌──────┐                                                           ┌──────┐      
+     │Client│                                                           │Server│      
+     └───┬──┘                                                           └───┬──┘      
+         │                                                                  │         
+         │          ╔═══════════════════════════════════════════╗           │         
+═════════╪══════════╣ Standard TLS Handshake with new extension ╠═══════════╪═════════
+         │          ╚═══════════════════════════════════════════╝           │         
+         │                                                                  │         
+         │          [01] ClientHello.                                       │         
+         │               - certificate_update_request                       │         
+         │               - extension_data: []                               │         
+         │─────────────────────────────────────────────────────────────────>│         
+         │                                                                  │         
+         │[02] ServerHello.                                                 │         
+         │CertificateRequest.                                               │         
+         │EncryptedExtensions.                                              │         
+         │- certificate_update_request                                      │         
+         │    - extension_data: [ClientCertificateRequest]                  │
+         │Certificate.                                                      │         
+         │- Certificates                                                    │         
+         │CertificateVerify.                                                │         
+         │- Signatures                                                      │         
+         │Finished.                                                         │         
+         │──────────────────────────────────────────────────────────────────│         
+         │                                                                  │
+         │                    [03] Certificate.                             │         
+         │                    - Certificates                                │         
+         │                    CertificateVerify.                            │         
+         │                    - Signatures                                  │         
+         │                    Finished.                                     │         
+         │─────────────────────────────────────────────────────────────────>│         
+         │                                                                  │         
+         │                                                                  │         
+         │                      ╔════════════════════╗                      │         
+═════════╪══════════════════════╣ Certificate Update ╠══════════════════════╪═════════
+         │                      ╚════════════════════╝                      │         
+         │                                                                  │         
+         │         [04] CertificateUpdate.                                  │         
+         │         - Exported Authenticator                                 │         
+         │─────────────────────────────────────────────────────────────────>│         
+         │                                                                  │         
+         │                                                                  │         
+         │              ╔═══════════════════════════════════╗               │         
+═════════╪══════════════╣ Additional Authenticator Requests ╠═══════════════╪═════════
+         │              ╚═══════════════════════════════════╝               │         
+         │                                                                  │         
+         │      [05] CertificateUpdateRequest.                              │         
+         │      - authenticator_request                                     │         
+         │─────────────────────────────────────────────────────────────────>│         
+         │                                                                  │         
+         │         [06] CertificateUpdate.                                  │         
+         │         - Exported Authenticator                                 │         
+         │<─────────────────────────────────────────────────────────────────│         
+     ┌───┴──┐                                                           ┌───┴──┐      
+     │Client│                                                           │Server│      
+     └──────┘                                                           └──────┘      
+
+~~~~~~~~~~
+{: title="title"}
+
 # Conventions and Definitions
 
 {::boilerplate bcp14-tagged}
