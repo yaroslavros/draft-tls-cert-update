@@ -63,6 +63,7 @@ The certificate update mechanism in the document is deliberately constrained to 
 
 # Overview
 
+The following figure is an overview of the flow described in this document:
 ~~~~~~~~~~ ascii-art
                                                                                       
      ┌──────┐                                                           ┌──────┐      
@@ -72,29 +73,29 @@ The certificate update mechanism in the document is deliberately constrained to 
          │          ╔═══════════════════════════════════════════╗           │         
 ═════════╪══════════╣ Standard TLS Handshake with new extension ╠═══════════╪═════════
          │          ╚═══════════════════════════════════════════╝           │         
-         │                                                                  │         
-         │          [01] ClientHello.                                       │         
-         │               - certificate_update_request                       │         
-         │               - extension_data: []                               │         
+         │                                                                  │      
+         │[01] ClientHello.                                                 │
+         │     - certificate_update_request                                 │
+         │     - extension_data: []                                         │
          │─────────────────────────────────────────────────────────────────>│         
          │                                                                  │         
          │[02] ServerHello.                                                 │         
-         │CertificateRequest.                                               │         
-         │EncryptedExtensions.                                              │         
-         │- certificate_update_request                                      │         
-         │    - extension_data: [ClientCertificateRequest]                  │
-         │Certificate.                                                      │         
-         │- Certificates                                                    │         
-         │CertificateVerify.                                                │         
-         │- Signatures                                                      │         
-         │Finished.                                                         │         
-         │──────────────────────────────────────────────────────────────────│         
+         │     CertificateRequest.                                          │         
+         │     EncryptedExtensions.                                         │         
+         │     - certificate_update_request                                 │         
+         │       - extension_data: [ClientCertificateRequest]               │
+         │     Certificate.                                                 │         
+         │     - Certificates                                               │         
+         │     CertificateVerify.                                           │         
+         │     - Signatures                                                 │         
+         │     Finished.                                                    │         
+         │<─────────────────────────────────────────────────────────────────│         
          │                                                                  │
-         │                    [03] Certificate.                             │         
-         │                    - Certificates                                │         
-         │                    CertificateVerify.                            │         
-         │                    - Signatures                                  │         
-         │                    Finished.                                     │         
+         │[03] Certificate.                                                 │         
+         │     - Certificates                                               │         
+         │     CertificateVerify.                                           │         
+         │     - Signatures                                                 │         
+         │     Finished.                                                    │         
          │─────────────────────────────────────────────────────────────────>│         
          │                                                                  │         
          │                                                                  │         
@@ -102,8 +103,8 @@ The certificate update mechanism in the document is deliberately constrained to 
 ═════════╪══════════════════════╣ Certificate Update ╠══════════════════════╪═════════
          │                      ╚════════════════════╝                      │         
          │                                                                  │         
-         │         [04] CertificateUpdate.                                  │         
-         │         - Exported Authenticator                                 │         
+         │[04] CertificateUpdate.                                           │         
+         │     - Exported Authenticator                                     │         
          │─────────────────────────────────────────────────────────────────>│         
          │                                                                  │         
          │                                                                  │         
@@ -111,19 +112,19 @@ The certificate update mechanism in the document is deliberately constrained to 
 ═════════╪══════════════╣ Additional Authenticator Requests ╠═══════════════╪═════════
          │              ╚═══════════════════════════════════╝               │         
          │                                                                  │         
-         │      [05] CertificateUpdateRequest.                              │         
-         │      - authenticator_request                                     │         
+         │[05] CertificateUpdateRequest.                                    │         
+         │     - authenticator_request                                      │         
          │─────────────────────────────────────────────────────────────────>│         
          │                                                                  │         
-         │         [06] CertificateUpdate.                                  │         
-         │         - Exported Authenticator                                 │         
+         │[06] CertificateUpdate.                                           │         
+         │     - Exported Authenticator                                     │         
          │<─────────────────────────────────────────────────────────────────│         
      ┌───┴──┐                                                           ┌───┴──┐      
      │Client│                                                           │Server│      
      └──────┘                                                           └──────┘      
 
 ~~~~~~~~~~
-{: title="title"}
+{: title="Overview"}
 
 # Conventions and Definitions
 
