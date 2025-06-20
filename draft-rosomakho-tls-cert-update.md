@@ -61,11 +61,56 @@ This approach allows TLS connections to remain valid across certificate updates 
 
 The certificate update mechanism in the document is deliberately constrained to preserve the authentication and authorization context of the connection. The updated certificate must retain the same subject, attributes, and issuing certificate authority as the original, with the only permitted difference being the validity period. This ensures that the peer identity remains unchanged and that application-layer authorization decisions based on the original certificate continue to hold after the update. By limiting the scope of updates in this way, the mechanism provides secure and seamless certificate refresh without altering the security properties of the TLS session.
 
+## Certificate Update flow
+
+Diagram below illustrates the certificate update process:
+
+~~~aasvg
+        Client                                           Server
+
+ Key  ^ ClientHello
+ Exch | + certificate_update_request
+      |                         -------->
+      v                                            ServerHello
+                                 {EncryptedExtensions           ^ Server
+                                 + certificate_update_request}  | Params
+                                         {CertificateRequest*}  v
+                                                 {Certificate}  ^
+                                           {CertificateVerify}  | Auth
+                                                    {Finished}  v
+                                <--------
+      ^ {Certificate*}
+ Auth | {CertificateVerify*}
+      v {Finished}              -------->
+        [Application Data]      <------->  [Application Data]
+                                   ...
+                                <--------  [CertificateUpdate] ^ Server Cert
+                                                               |
+ [CertificateUpdateRequest]     -------->                      v Update
+
+                                   ...
+         [Application Data]     <------->  [Application Data]
+                                   ...
+       [CertificateUpdate*]     -------->                      ^ Client Cert
+                                   [CertificateUpdateRequest*] |
+                                <--------                      v Update
+                                   ...
+        [Application Data]      <------->  [Application Data]
+
+                *Indicates messages/extensions that are only used for
+                 client authentication.
+~~~
+{: #fig-server-cert-update title="Certificate Update Process"}
+
+TLS peers negotiate support of the Certificate Update mechanism by including `certificate_update_request` extension in the `ClientHello` and `EncryptedExtensions` messages. As explained in {{initial-authenticator-request}}, the extention MAY contain an Authenticator Request can later be used by the peer to provide an updated certificate.
+
+During the lifetime of the TLS session, either peer MAY provide updated certificate by sending a `CertificateUpdate` message containing an Authenticator, as defined in {{cert-update-message}}. After successfully validating the updated certificate, the receiving peer MAY provide a new Authenticator Request using the `CertificateUpdateRequest` message defined in {{additional-authenticator-requests}}.
+
 # Conventions and Definitions
 
 {::boilerplate bcp14-tagged}
 
-# Negotiating Support and Providing Initial Authenticator Request
+# Negotiating Support and Providing Initial Authenticator Request {#initial-authenticator-request}
 
 To enable certificate updates, endpoints must explicitly indicate support during the TLS 1.3 handshake. This is done using the `certificate_update_request` extension, which may be included in either the ClientHello or EncryptedExtensions message.
 
@@ -106,7 +151,7 @@ If an endpoint receives a `certificate_update_request` extension with a non-empt
 
 Endpoints MUST NOT attempt to interpret or store a malformed authenticator request. The extension is either valid and usable or invalid and fatal to the handshake.
 
-# Certificate Update
+# Certificate Update {#cert-update-message}
 
 Once the the handshake has completed and a peer has provided an authenticator request the other endpoint may send a certificate update using the `CertificateUpdate` handshake message.
 
@@ -116,7 +161,7 @@ The message is structured as follows:
 
 ~~~~~~~~~~ ascii-art
 struct {
-    opaque authenticator;
+    opaque authenticator<1..2^24-1>;
 } CertificateUpdate;
 ~~~~~~~~~~
 {: title="CertificateUpdate message"}
@@ -163,7 +208,7 @@ The message is structured as follows:
 
 ~~~~~~~~~~ ascii-art
 struct {
-    opaque authenticator_request;
+    opaque authenticator_request<1..2^16-1>;
 } CertificateUpdateRequest;
 ~~~~~~~~~~
 {: title="CertificateUpdateRequest message"}
