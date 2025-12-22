@@ -5,8 +5,8 @@
 Transport Layer Security                                    Y. Rosomakho
 Internet-Draft                                                   Zscaler
 Intended status: Standards Track                                T. Reddy
-Expires: 22 December 2025                                          Nokia
-                                                            20 June 2025
+Expires: 25 June 2026                                              Nokia
+                                                        22 December 2025
 
 
                      Certificate Update in TLS 1.3
@@ -56,7 +56,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 22 December 2025.
+   This Internet-Draft will expire on 25 June 2026.
 
 Copyright Notice
 
