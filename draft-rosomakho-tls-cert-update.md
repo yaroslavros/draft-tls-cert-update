@@ -39,7 +39,7 @@ informative:
 
 --- abstract
 
-This document defines a mechanism that enables TLS 1.3 endpoints to update their certificates during the lifetime of a connection using Exported Authenticators. A new extension is introduced to negotiate support for certificate update at handshake time. When negotiated, either endpoint can provide a post-handshake authenticator containing an updated certificate, delivered via a new handshake message. This mechanism allows long-lived TLS connections to remain valid across certificate rotations without requiring session termination.
+This document defines a mechanism that enables TLS 1.3 endpoints to update their certificates or perform post-handshake re-attestation during the lifetime of a connection using Exported Authenticators. A new extension is introduced to negotiate support for this mechanism at handshake time. When negotiated, either endpoint can provide a post-handshake authenticator containing an updated certificate or fresh attestation evidence, delivered via a new handshake message. This mechanism allows long-lived TLS connections to remain valid across certificate rotations and to satisfy re-attestation requirements without requiring session termination.
 
 --- middle
 
@@ -49,15 +49,17 @@ This document defines a mechanism that enables TLS 1.3 endpoints to update their
 
 This presents a limitation for long-lived connections in environments where certificates may need to be refreshed, whether due to expiration, revocation, or key rotation. Terminating and re-establishing connections solely for the purpose of updating certificates can be disruptive and inefficient.
 
+In addition to certificate rotation, long-lived connections may require periodic re-attestation of an endpoint's platform state. When attestation was performed during the initial handshake, as defined in {{draft-fossati-seat-early-attestation}}, the relying party may need fresh assurance that the attesting endpoint remains in a secure state. The mechanism defined in this document provides the transport for delivering fresh attestation evidence post-handshake, complementing the handshake-time attestation defined in that specification.
+
 Exported Authenticators {{!EXPORTED-AUTH=RFC9261}} offer a general-purpose mechanism for proving possession of a certificate after the handshake, using an authenticator request supplied by the peer. However, the specification does not define a mechanism for transmitting authenticator requests or delivering authenticators at the TLS layer.
 
-This document defines a mechanism for certificate updates within an established TLS 1.3 connection. It introduces a new extension, `certificate_update_request`, that allows each endpoint to optionally include an authenticator request as part of the initial handshake. This request can later be used by the peer to generate an Exported Authenticator containing an update certificate.
+This document defines a mechanism for certificate updates and re-attestation within an established TLS 1.3 connection. It introduces a new extension, `certificate_update_request`, that allows each endpoint to optionally include an authenticator request as part of the initial handshake. This request can later be used by the peer to generate an Exported Authenticator containing an updated certificate or fresh attestation evidence.
 
-To deliver the updated certificate, a new TLS handshake message, `CertificateUpdate`, is defined. This message carries a complete Exported Authenticator and may be sent by either endpoint after the handshake, as long as an authenticator request was previously provided by the peer.
+To deliver the updated certificate or attestation evidence, a new TLS handshake message, `CertificateUpdate`, is defined. This message carries a complete Exported Authenticator and may be sent by either endpoint after the handshake, as long as an authenticator request was previously provided by the peer.
 
 Because authenticator requests are single-use and may not be reused in subsequent authenticator constructions, a second post-handshake message is defined: `CertificateUpdateRequest`. This message allows an endpoint to provide a new authenticator request for future use after processing a `CertificateUpdate`.
 
-This approach allows TLS connections to remain valid across certificate updates without requiring session termination. It is compatible with TLS 1.3 and {{?QUIC=RFC9000}}, and can be used regardless of the application protocol encapsulated within the connection.
+This approach allows TLS connections to remain valid across certificate updates and re-attestation without requiring session termination. It is compatible with TLS 1.3 and {{?QUIC=RFC9000}}, and can be used regardless of the application protocol encapsulated within the connection.
 
 The certificate update mechanism in the document is deliberately constrained to preserve the authentication and authorization context of the connection. The updated certificate must retain the same subject, attributes, and issuing certificate authority as the original, with the only permitted difference being the validity period. This ensures that the peer identity remains unchanged and that application-layer authorization decisions based on the original certificate continue to hold after the update. By limiting the scope of updates in this way, the mechanism provides secure and seamless certificate refresh without altering the security properties of the TLS session.
 
@@ -177,10 +179,14 @@ The Exported Authenticator carried in a `CertificateUpdate` message MUST meet th
 - Updated certificate MUST NOT contain any extensions that are not present in the original certificate.
 - The public key MAY differ from the original, but the public key algorithm and key length MUST match those of the original certificate.
 - The issuer of the updated certificate MUST be the same as the issuer of the original certificate.
-- The `SignatureScheme` used in the `CertificateVerify` message of the Exported Authenticator MUST be the same as the one used in the sender’s original handshake authentication.
+- The `SignatureScheme` used in the `CertificateVerify` message of the Exported Authenticator MUST be the same as the one used in the sender's original handshake authentication.
 - The certificate provided in the `CertificateUpdate` message MUST NOT have been used previously by the sender during the current TLS session.
 
-These constraints ensure that the authenticator represents the same logical identity and cryptographic profile as the original authentication, while ensuring freshness and preventing redundant certificate reuse. A peer that receives a `CertificateUpdate` containing a certificate or signature that does not meet these requirements MUST terminate the connection with an `illegal_parameter` alert.
+These constraints ensure that the authenticator represents the same logical identity and cryptographic profile as the original authentication, while ensuring freshness and preventing redundant certificate reuse.
+
+When the `CertificateUpdate` message is used to perform re-attestation, as negotiated during the handshake per {{draft-fossati-seat-early-attestation}}, the certificate extensions carry attestation Evidence or Attestation Results. Validation of the attestation payload is governed by {{draft-fossati-seat-early-attestation}}. All other requirements above apply equally to the re-attestation case.
+
+A peer that receives a `CertificateUpdate` containing a certificate or signature that does not meet these requirements MUST terminate the connection with an `illegal_parameter` alert.
 
 ## Sending and Receiving Certificate Updates
 
@@ -215,8 +221,8 @@ struct {
 
 The authenticator_request field MUST contain either a `CertificateRequest` or a `ClientCertificateRequest`, depending on the role of the sender and the direction of certificate update expected:
 
-- A client sends a `CertificateRequest` structure (to refresh the server’s certificate).
-- A server sends a `ClientCertificateRequest` structure (to refresh the client’s certificate).
+- A client sends a `CertificateRequest` structure (to refresh the server's certificate).
+- A server sends a `ClientCertificateRequest` structure (to refresh the client's certificate).
 
 The structure and encoding of these fields are identical to the formats defined in {{Section 4 of EXPORTED-AUTH}}. The `extensions` of the authenticator request MUST be empty.
 
@@ -224,7 +230,7 @@ The structure and encoding of these fields are identical to the formats defined 
 
 A `CertificateUpdateRequest` message MAY be sent at any time after processing a valid `CertificateUpdate` from the peer. An endpoint MUST NOT send a `CertificateUpdateRequest` unless it has received and verified a `CertificateUpdate` using the previous authenticator request. The endpoint MUST wait for the peer to complete a `CertificateUpdate` using the outstanding request before sending a new one.
 
-Upon receiving a `CertificateUpdateRequest`, the peer MUST validate that the message contains a well-formed `CertificateRequest` or `ClientCertificateRequest`, depending on the sender’s role. If the message is malformed, the authenticator request cannot be parsed or the authenticator request contains extensions, the connection MUST be terminated with an `illegal_parameter` alert.
+Upon receiving a `CertificateUpdateRequest`, the peer MUST validate that the message contains a well-formed `CertificateRequest` or `ClientCertificateRequest`, depending on the sender's role. If the message is malformed, the authenticator request cannot be parsed or the authenticator request contains extensions, the connection MUST be terminated with an `illegal_parameter` alert.
 
 # Applicability to QUIC
 
@@ -259,6 +265,12 @@ Endpoints MUST discard authenticator requests after a successful `CertificateUpd
 ## Application-Layer Implications
 
 Applications that rely on peer certificate properties for access control decisions MAY reevaluate those decisions after a certificate update if needed. However, because the updated certificate is required to maintain the same identity, such re-validation is typically unnecessary for applications that rely only on the peer's authenticated identity. If the updated certificate does not match the identity validated during the TLS handshake, the TLS stack MUST terminate the connection.
+
+## Re-attestation
+
+When `CertificateUpdate` is used for re-attestation, the certificate constraints defined in {{authenticators-requirements}} ensure that the authenticated identity of the peer remains unchanged. The attestation payload carried in the certificate extensions provides fresh assurance of the peer's platform state without altering the security properties of the TLS session.
+
+The freshness and validation requirements for the attestation payload are governed by {{draft-fossati-seat-early-attestation}}. Implementations MUST ensure that re-attestation does not introduce new identity claims or capabilities beyond those established during the initial handshake.
 
 # IANA Considerations
 
